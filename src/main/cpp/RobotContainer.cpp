@@ -4,13 +4,27 @@
 
 #include "RobotContainer.h"
 
+#include "subsystems/DriveSystem.h"
+
 #include <frc2/command/button/Trigger.h>
 
 RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
+  DriveSubsystem m_drive;
 
   // Configure the button bindings
   ConfigureBindings();
+
+  m_drive.SetDefaultCommand(frc2::RunCommand(
+    [this] {
+      m_drive.TeleopDrive(
+        m_driverController.GetLeftX();,
+        m_driverController.GetLeftY();,
+        m_driverController.GetRightX();,
+        m_driverController.GetRightY();
+      )
+    }
+  ))
 }
 
 void RobotContainer::ConfigureBindings() {
