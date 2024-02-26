@@ -4,7 +4,7 @@
  * Description: Take angle as an input then move and hold arm at that angle.
  */
 #include "rev/CANSparkMax.h"
-#include "include/ArmController.h"
+#include "subsystems/ArmController.h"
 
 //PID coefficients
 double kP = 0.1,
