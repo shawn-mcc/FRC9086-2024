@@ -8,7 +8,7 @@
 #include "cmath"
 
 //Call this to get the opposite angle of something
-RobotUtils::GetOppositeAngle(double angle){
+double RobotUtils::GetOppositeAngle(double angle){
     angle += M_PI;
 
     //Check to make sure that the opposite angle is still within 2pi

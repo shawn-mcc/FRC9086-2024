@@ -17,21 +17,14 @@ SwerveModule::SwerveModule(const int driveID, const int steerID, const double or
     // Reset to the defaults to be safe
     m_drive.RestoreFactoryDefaults();
     m_steer.RestoreFactoryDefaults();
-    
-    // Create PID controllers
-    rev::SparkPIDController m_drivePID = m_drive.getPIDController();
-    rev::SparkPIDController m_steerPID = m_steer.getPIDController();
-
-    // Create encoder
-    rev::SparkAbsoluteEncoder m_steerEncoder = m_drive.GetEncoder(rev::SparkAbsoluteEncoder::Type::kDutyCycle);
 
     // Set motor current limits to prevent them from cooking
     m_drive.SetSmartCurrentLimit(40);
     m_steer.SetSmartCurrentLimit(20);
 
     // Set modes to brake
-    m_drive.SetIdleMode(kBrake);
-    m_steer.SetIdleMode(kBrake);
+    m_drive.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+    m_steer.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
 
     // Establish PID controls to keep the motors in proper positions
     // These can be changed if the need arises
@@ -49,7 +42,7 @@ SwerveModule::SwerveModule(const int driveID, const int steerID, const double or
 
     // Make it so that PID understands limits and can work around them
     m_steerPID.SetPositionPIDWrappingEnabled(true);
-    m_steerPID.SetFeedBackDevice(m_driveEncoder);
+    m_steerPID.SetFeedbackDevice(m_steerEncoder);
     
     m_steerPID.SetPositionPIDWrappingMinInput(0);
     m_steerPID.SetPositionPIDWrappingMaxInput(6.28);
@@ -60,7 +53,7 @@ SwerveModule::SwerveModule(const int driveID, const int steerID, const double or
 }
 
 // Call this to get the position value of the steering system
-void SwerveModule::GetPosition() {
+double SwerveModule::GetPosition() {
     double position = m_steerEncoder.GetPosition();
     return(position);
 }
@@ -72,13 +65,13 @@ void SwerveModule::SetState(double driveSpeed, double steerPosition) {
     double currentPosition, errorMargin = .01;
 
     // Set steering position to the correct position using PID, steers with radians
-    m_steer.SetReference(steerPosition, rev::CANSparkMax::ControlType::kPosition);
+    m_steerPID.SetReference(steerPosition, rev::CANSparkMax::ControlType::kPosition);
 
     // Get current position
-    currentPosition = m_steer.GetPosition() + originalAngle;
+    currentPosition = m_steerEncoder.GetPosition();
 
     if (currentPosition * (1 - errorMargin) > steerPosition && currentPosition * (1 + errorMargin) < steerPosition) {
         // Drive
-        m_drive.set(driveSpeed);
+        m_drive.Set(driveSpeed);
     }
 }
