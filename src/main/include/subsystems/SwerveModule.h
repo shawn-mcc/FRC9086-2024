@@ -8,6 +8,7 @@
 #include <rev/SparkAbsoluteEncoder.h>
 #include <rev/SparkPIDController.h>
 #include <rev/SparkRelativeEncoder.h>
+#include "RobotUtils.h"
 
 class SwerveModule {
 public:
@@ -28,6 +29,8 @@ public:
 private:
     // Get offset
     double originalAngle;
+
+    RobotUtils RobotUtil;
 
     // Get motors
     rev::CANSparkMax m_drive;

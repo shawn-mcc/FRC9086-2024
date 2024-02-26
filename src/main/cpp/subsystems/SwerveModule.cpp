@@ -62,13 +62,13 @@ double SwerveModule::GetPosition() {
 void SwerveModule::SetState(double driveSpeed, double steerPosition) {
 
     // Initialize varaibles
-    double currentPosition, errorMargin = .01, correctedPosition = steerPosition + originalAngle;
+    double currentPosition, errorMargin = .01, correctedPosition = RobotUtil.GetCorrectedAngle(steerPosition + originalAngle);
 
     // Set steering position to the correct position using PID, steers with radians
     m_steerPID.SetReference(correctedPosition, rev::CANSparkMax::ControlType::kPosition);
 
     // Get current position
-    currentPosition = m_steerEncoder.GetPosition();
+    currentPosition = RobotUtil.GetCorrectedAngle(m_steerEncoder.GetPosition() + originalAngle);
 
     if (correctedPosition * (1 - errorMargin) < currentPosition && correctedPosition * (1 + errorMargin) > currentPosition) {
         // Drive
