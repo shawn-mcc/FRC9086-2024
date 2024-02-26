@@ -15,7 +15,7 @@ class DriveSystem : public frc2::SubsystemBase {
  public:
   DriveSystem();
 
-  /**
+  /*
    * Will be called periodically whenever the CommandScheduler runs.
    */
   void Periodic() override;

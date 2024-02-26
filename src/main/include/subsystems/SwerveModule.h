@@ -26,6 +26,10 @@ public:
 
 
 private:
+    // Get offset
+    double originalAngle;
+
+    // Get motors
     rev::CANSparkMax m_drive;
     rev::CANSparkMax m_steer;
 
