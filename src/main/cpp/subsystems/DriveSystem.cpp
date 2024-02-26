@@ -1,7 +1,7 @@
 /*
- * Project: 9086SWRV
+ * Project: 9086-2024
  * File: DriveSystems.cpp
- * Description: Using all of the swerve modules together, ONLY SWERVE DRIVE INTERACTIONS
+ * Description: Using all of the swerve modules together along with any other drive components
  */
 
 #include "subsystems/SwerveModule.h"

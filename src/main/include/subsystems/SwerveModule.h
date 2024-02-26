@@ -1,3 +1,8 @@
+/*
+ * Project: 9086-2024
+ * File: SwerveModule.h
+ * Description: Create swerve modules to be used in other files, modules built using REV Robotics CAN SparkMax Motor Controllers.
+ */
 
 #pragma once
 
@@ -12,12 +17,7 @@
 
 class SwerveModule {
 public:
-    /**
-     * Constructs a MAXSwerveModule and configures the driving and turning motor,
-     * encoder, and PID controller. This configuration is specific to the REV
-     * MAXSwerve Module built with NEOs, SPARKS MAX, and a Through Bore
-     * Encoder.
-     */
+
     SwerveModule(int driveID, int steerID,
                     double originalAngle);
 

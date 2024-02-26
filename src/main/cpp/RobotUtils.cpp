@@ -1,8 +1,9 @@
 /*
- * Project: 9086SWRV
+ * Project: 9086-2024
  * File: RobotUtils.cpp
- * Description: Useful robot code that can be called anywhere in the code as long as RobotUtils.h is included
+ * Description: Assortment of commands that can be used in many places
  */
+
 
 #include "RobotUtils.h"
 #include "cmath"
