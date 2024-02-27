@@ -1,11 +1,11 @@
-#ifndef ARMCONTROLLER_H
-#define ARMCONTROLLER_H
+#pragma once
 
 #include <rev/CANSparkMax.h>
 
 class ArmController {
 public:
-    ArmController(rev::CANSparkMax& leftACM, rev::CANSparkMax& rightACM);
+    ArmController(const int leftACM, const int rightACM);
+
     void setPosition(double angle);
 
 private:
@@ -13,13 +13,12 @@ private:
     rev::CANSparkMax rightACM;
 
     // Create encoders
-    rev::SparkMaxAlternateEncoder leftACME = leftACM.GetAlternateEncoder(rev::CANSparkMax::MotorType::kBrushless, 8192);
-    rev::SparkMaxAlternateEncoder rightACME = rightACM.GetAlternateEncoder(rev::CANSparkMax::MotorType::kBrushless, 8192);
+    rev::SparkAbsoluteEncoder leftACME = leftACM.GetAbsoluteEncoder(rev::SparkAbsoluteEncoder::Type::kDutyCycle);
+    rev::SparkAbsoluteEncoder rightACME = rightACM.GetAbsoluteEncoder(rev::SparkAbsoluteEncoder::Type::kDutyCycle);
 
     // Create PID controllers
-    rev::SparkPIDController leftACM_PID = leftACM.getPIDController();
-    rev::SparkPIDController rightACM_PID = rightACM.getPIDController();
+    rev::SparkPIDController leftACM_PID = leftACM.GetPIDController();
+    rev::SparkPIDController rightACM_PID = rightACM.GetPIDController();
 
 };
 
-#endif //ARMCONTROLLER_H

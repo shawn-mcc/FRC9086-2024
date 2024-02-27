@@ -3,6 +3,8 @@
  * File: LauncherController.cpp
  * Description: Take angle as an input then move and hold launcher at that angle.
  */
+
+/*
 #include <rev/CANSparkMax.h>
 
 //PID coefficients
@@ -47,4 +49,4 @@ void LauncherController::setPosition(double requestedAngle){
     // Set arm motors to desired position using SetReference
     leftLCM_PID.SetReference(steps, rev::CANSparkMax::ControlType::kPosition);
     rightLCM_PID.SetReference(steps, rev::CANSparkMax::ControlType::kPosition);
-}
+} */

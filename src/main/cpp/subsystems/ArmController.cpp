@@ -14,10 +14,10 @@ double kP = 0.1,
 
        kMinOutput = -1;
 
-ArmController::ArmController(const int leftACMID, const int rev::CANSparkMax rightACMID)
+ArmController::ArmController(const int leftACMID, const int rightACMID):
     // Create motors
-    rev::CANSparkMax leftACM{leftACMID, rev::CANSparkMax::MotorType::kBrushless};
-    rev::CANSparkMax rightACM{rightACMID, rev::CANSparkMax::MotorType::kBrushless};
+    leftACM{leftACMID, rev::CANSparkMax::MotorType::kBrushless},
+    rightACM{rightACMID, rev::CANSparkMax::MotorType::kBrushless} {
 
     // Restore factory defaults because all the examples do it
     leftACM.RestoreFactoryDefaults();
@@ -37,7 +37,7 @@ ArmController::ArmController(const int leftACMID, const int rev::CANSparkMax rig
     rightACM_PID.SetIZone(kIz);
     rightACM_PID.SetFF(kFF);
     rightACM_PID.SetOutputRange(kMinOutput, kMaxOutput);
-
+}
 
 void ArmController::setPosition(double angle){
     // Converts angle in degrees to steps
