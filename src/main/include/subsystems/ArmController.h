@@ -1,3 +1,9 @@
+/*
+ * Project: ArmController
+ * File: ArmController.cpp
+ * Description: Take angle as an input then move and hold arm at that angle.
+ */
+
 #pragma once
 
 #include <rev/CANSparkMax.h>
@@ -6,9 +12,20 @@ class ArmController {
 public:
     ArmController(const int leftACM, const int rightACM);
 
-    void setPosition(double angle);
+    void SetPosition(double angle);
 
 private:
+
+    //PID coefficients
+    double kP = 0.1,
+           kI = 1e-4,
+           kD = 1,
+           kIz = 0,
+           kFF = 0,
+           kMaxOutput = 1,
+           kMinOutput = -1;
+
+    // Get motor controllers
     rev::CANSparkMax leftACM;
     rev::CANSparkMax rightACM;
 
