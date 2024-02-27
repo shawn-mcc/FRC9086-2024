@@ -1,3 +1,8 @@
+/*
+ * Project: 9086-2024
+ * File: RobotUtils.h
+ * Description: Assortment of commands that can be used in many places
+ */
 
 #pragma once
 
@@ -6,8 +11,11 @@
 class RobotUtils {
 public:
 
-    //Call this to get the opposite angle of something
+    // Call this to get the opposite angle of something
     double GetOppositeAngle(double angle);
+
+    // Call this to get an angle between 0 and 2pi
+    double GetCorrectedAngle(double angle);
 
 private:
 };
