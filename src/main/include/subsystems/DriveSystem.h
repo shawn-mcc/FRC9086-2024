@@ -16,6 +16,8 @@
 #include <frc2/command/SubsystemBase.h>
 
 #include "SwerveModule.h"
+#include "ArmController.h"
+#include "LauncherController.h"
 
 class DriveSystem : public frc2::SubsystemBase {
  public:
@@ -28,13 +30,13 @@ class DriveSystem : public frc2::SubsystemBase {
 
   // Subsystem methods go here.
 
-  void TeleopDrive(double x1Input, double y1Input, double x2Input, double y2Input);
+  void TeleopDrive(double x1Input, double y1Input, double x2Input, double y2Input, double armInput, double launcherInput);
 
   void AutonDrive();
 
   void TestDrive();
 
- private:
+private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
 
@@ -43,5 +45,6 @@ class DriveSystem : public frc2::SubsystemBase {
   SwerveModule swrv_backLeft;
   SwerveModule swrv_backRight;
 
-
+  ArmController arm_controller;
+  LauncherController launcher_controller;
 };

@@ -18,10 +18,12 @@ RobotContainer::RobotContainer() {
   m_drive.SetDefaultCommand(frc2::RunCommand(
   [this] {
       m_drive.TeleopDrive(
-        m_driverController.GetLeftX(),
-        m_driverController.GetLeftY(),
-        m_driverController.GetRightX(),
-        m_driverController.GetRightY());
+        m_primaryController.GetLeftX(),
+        m_primaryController.GetLeftY(),
+        m_primaryController.GetRightX(),
+        m_primaryController.GetRightY(),
+        m_secondaryController.GetLeftY(),
+        m_secondaryController.GetRightY());
       },
       {&m_drive}));
 }

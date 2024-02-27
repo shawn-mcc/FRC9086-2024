@@ -27,7 +27,8 @@ public:
 
 private:
     // The driver's controller
-    frc::XboxController m_driverController{1};
+    frc::XboxController m_primaryController{0};
+    frc::XboxController m_secondaryController{1};
 
     // The robot's subsystems and commands are defined here...
 
