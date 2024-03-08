@@ -39,6 +39,8 @@ ArmController::ArmController(const int leftACMID, const int rightACMID):
     rightACM_PID.SetFF(kFF);
     rightACM_PID.SetOutputRange(kMinOutput, kMaxOutput);
 
+    rightACM.Follow(leftACM);
+
     // Burn flash
     leftACM.BurnFlash();
     rightACM.BurnFlash();

@@ -4,7 +4,7 @@
 ### C++ ###
 # Prerequisites
 *.d
-
+git rm -r --cached
 # Compiled Object files
 *.slo
 *.lo

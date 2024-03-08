@@ -39,6 +39,8 @@ LauncherController::LauncherController(const int leftLCMID, const int rightLCMID
     rightLCM_PID.SetFF(kFF);
     rightLCM_PID.SetOutputRange(kMinOutput, kMaxOutput);
 
+    rightLCM.Follow(rightLCM);
+
     // Burn flash
     leftLCM.BurnFlash();
     rightLCM.BurnFlash();

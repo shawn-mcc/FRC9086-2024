@@ -41,6 +41,6 @@ private:
     rev::SparkPIDController m_steerPID = m_steer.GetPIDController();
 
     // Create encoder
-    rev::SparkAbsoluteEncoder m_steerEncoder = m_drive.GetAbsoluteEncoder(rev::SparkAbsoluteEncoder::Type::kDutyCycle);
+    rev::SparkAbsoluteEncoder m_steerEncoder = m_steer.GetAbsoluteEncoder(rev::SparkAbsoluteEncoder::Type::kDutyCycle);
 
 };

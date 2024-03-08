@@ -4,9 +4,13 @@
 
 #include "Robot.h"
 
-#include <frc2/command/CommandScheduler.h>
+#include <frc/smartdashboard/SmartDashboard.h>
+#include "subsystems/SwerveModule.h"
+#include "subsystems/ArmController.h"
+#include "frc/XboxController.h"
 
-void Robot::RobotInit() {}
+void Robot::RobotInit() {
+}
 
 /**
  * This function is called every 20 ms, no matter the mode. Use
@@ -17,7 +21,6 @@ void Robot::RobotInit() {}
  * LiveWindow and SmartDashboard integrated updating.
  */
 void Robot::RobotPeriodic() {
-  frc2::CommandScheduler::GetInstance().Run();
 }
 
 /**
@@ -44,19 +47,42 @@ void Robot::AutonomousInit() {
 void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {
-  // This makes sure that the autonomous stops running when
-  // teleop starts running. If you want the autonomous to
-  // continue until interrupted by another command, remove
-  // this line or comment it out.
-  if (m_autonomousCommand) {
-    m_autonomousCommand->Cancel();
-  }
+
 }
 
 /**
  * This function is called periodically during operator control.
  */
-void Robot::TeleopPeriodic() {}
+void Robot::TeleopPeriodic() {
+
+    double x1Input = m_primaryController.GetLeftX();
+    double y1Input = m_primaryController.GetLeftY();
+    double x2Input = m_primaryController.GetRightX();
+    double y2Input = m_primaryController.GetRightY();
+    double x3Input = m_secondaryController.GetLeftY();
+    double y3Input = m_secondaryController.GetRightY();
+
+    // Swerve control
+    double steeringAngle = atan2(y1Input, x1Input);
+
+    if (steeringAngle < 0) {
+        steeringAngle = -steeringAngle;
+    }
+
+    swrv_frontLeft.SetState((x2Input + y2Input),steeringAngle);
+    swrv_frontRight.SetState((x2Input - y2Input), steeringAngle);
+    swrv_backLeft.SetState((x2Input + y2Input), steeringAngle);
+    swrv_backRight.SetState((x2Input - y2Input), steeringAngle);
+
+    // Display angle
+    frc::SmartDashboard::PutNumber("Steering angle", steeringAngle);
+    frc::SmartDashboard::PutNumber("SWRVFLENC", swrv_frontLeft.GetPosition());
+    frc::SmartDashboard::PutNumber("SWRVFRENC", swrv_frontRight.GetPosition());
+    frc::SmartDashboard::PutNumber("SWRVRLENC", swrv_backLeft.GetPosition());
+    frc::SmartDashboard::PutNumber("SWRVRRENC", swrv_backRight.GetPosition());
+
+
+}
 
 /**
  * This function is called periodically during test mode.

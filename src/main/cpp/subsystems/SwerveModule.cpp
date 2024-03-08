@@ -8,6 +8,7 @@
 #include "RobotUtils.h"
 #include "cmath"
 #include "rev/CANSparkMax.h"
+#include <frc/smartdashboard/SmartDashboard.h>
 
 // Create each swerve module
 SwerveModule::SwerveModule(const int driveID, const int steerID, const double originalAngle): 
@@ -26,26 +27,34 @@ SwerveModule::SwerveModule(const int driveID, const int steerID, const double or
     m_drive.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
     m_steer.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
 
+    // Set encoder
+    m_steerPID.SetFeedbackDevice(m_steerEncoder);
+
     // Establish PID controls to keep the motors in proper positions
     // These can be changed if the need arises
     m_drivePID.SetP(0.1);
     m_drivePID.SetI(1e-4);
     m_drivePID.SetD(1);
+    m_drivePID.SetIZone(0);
     m_drivePID.SetFF(0);
-    m_drivePID.SetOutputRange(1, -1);
-    
+    m_drivePID.SetOutputRange(-1, 1);
+
+    m_steerEncoder.SetPositionConversionFactor(6.283185420251465);
+    m_steerEncoder.SetVelocityConversionFactor(0.10471975511965977);
+    m_steerEncoder.SetInverted(true);
+
     m_steerPID.SetP(0.1);
     m_steerPID.SetI(1e-4);
     m_steerPID.SetD(1);
+    m_steerPID.SetIZone(0);
     m_steerPID.SetFF(0);
-    m_steerPID.SetOutputRange(0, 6.28);
+    m_steerPID.SetOutputRange(0, 6.283185420251465);
 
     // Make it so that PID understands limits and can work around them
     m_steerPID.SetPositionPIDWrappingEnabled(true);
-    m_steerPID.SetFeedbackDevice(m_steerEncoder);
     
     m_steerPID.SetPositionPIDWrappingMinInput(0);
-    m_steerPID.SetPositionPIDWrappingMaxInput(6.28);
+    m_steerPID.SetPositionPIDWrappingMaxInput(6.283185420251465);
 
     // Burn flash to save to memory
     m_drive.BurnFlash();
@@ -55,14 +64,15 @@ SwerveModule::SwerveModule(const int driveID, const int steerID, const double or
 // Call this to get the position value of the steering system
 double SwerveModule::GetPosition() {
     double position = m_steerEncoder.GetPosition();
-    return(position);
+    return position;
 }
 
 // Call this to set module to a position (in radians) and drive (in percentage 0-1)
 void SwerveModule::SetState(double driveSpeed, double steerPosition) {
 
-    // Initialize varaibles
-    double currentPosition, errorMargin = .01, correctedPosition = RobotUtil.GetCorrectedAngle(steerPosition + originalAngle);
+    // Initialize variables
+    double currentPosition, correctedPosition = RobotUtil.GetCorrectedAngle(steerPosition + originalAngle);
+    frc::SmartDashboard::PutNumber("SWRV", correctedPosition);
 
     // Set steering position to the correct position using PID, steers with radians
     m_steerPID.SetReference(correctedPosition, rev::CANSparkMax::ControlType::kPosition);
@@ -70,8 +80,6 @@ void SwerveModule::SetState(double driveSpeed, double steerPosition) {
     // Get current position
     currentPosition = RobotUtil.GetCorrectedAngle(m_steerEncoder.GetPosition() + originalAngle);
 
-    if (correctedPosition * (1 - errorMargin) < currentPosition && correctedPosition * (1 + errorMargin) > currentPosition) {
-        // Drive
-        m_drive.Set(driveSpeed);
-    }
+    // Drive
+    m_drive.Set(driveSpeed);
 }
