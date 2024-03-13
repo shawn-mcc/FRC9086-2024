@@ -2,17 +2,32 @@
 #pragma once
 
 #include <frc/TimedRobot.h>
-#include <frc2/command/Command.h>
+#include <frc/PneumaticHub.h>
+#include "subsystems/SwerveModule.h"
+#include "subsystems/LauncherController.h"
+#include "subsystems/ArmController.h"
+#include "subsystems/FireControl.h"
+#include "RobotUtils.h"
+#include "frc/XboxController.h"
+#include "frc/BuiltInAccelerometer.h"
 
-#include "RobotContainer.h"
 
 class Robot : public frc::TimedRobot {
 
-    SwerveModule swrv_frontLeft = SwerveModule(2, 1, 1.57);
-    SwerveModule swrv_frontRight = SwerveModule(18, 19, 0);
-    SwerveModule swrv_backLeft = SwerveModule(8, 7, 3.14);
-    SwerveModule swrv_backRight = SwerveModule(10, 11, 4.71);
+    RobotUtils RobotUtil;
 
+    frc::BuiltInAccelerometer accelerometer;
+
+    SwerveModule swrv_frontLeft = SwerveModule(2, 1);
+    SwerveModule swrv_frontRight = SwerveModule(18, 19);
+    SwerveModule swrv_backLeft = SwerveModule(8, 7);
+    SwerveModule swrv_backRight = SwerveModule(10, 11);
+
+	ArmController arm = ArmController(3, 17);
+
+    LauncherController launcher = LauncherController(4, 16);
+
+    FireControl fireController = FireControl(14, 5, 15);
 
     frc::XboxController m_primaryController{0};
     frc::XboxController m_secondaryController{1};
@@ -33,4 +48,5 @@ public:
 private:
     // Have it null by default so that if testing teleop it
     // doesn't have undefined behavior and potentially crash.
+    frc::PneumaticHub m_ph{9};
 };

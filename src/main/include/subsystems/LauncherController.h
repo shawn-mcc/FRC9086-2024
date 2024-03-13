@@ -13,8 +13,10 @@ public:
     // Generate a launcher controller object
     LauncherController(const int leftLCMID, const int rightLCMID);
 
+    double GetLauncherPosition();
+
     // Set position of the launcher controller
-    void SetPosition(double requestedAngle);
+    void SetLauncherPosition(double requestedAngle);
 
 private:
     //PID coefficients
@@ -31,7 +33,7 @@ private:
     rev::CANSparkMax rightLCM;
 
     // Create encoders
-    rev::SparkAbsoluteEncoder leftLCME = leftLCM.GetAbsoluteEncoder(rev::SparkAbsoluteEncoder::Type::kDutyCycle);
+    //rev::SparkAbsoluteEncoder leftLCME = leftLCM.GetAbsoluteEncoder(rev::SparkAbsoluteEncoder::Type::kDutyCycle);
     rev::SparkAbsoluteEncoder rightLCME = rightLCM.GetAbsoluteEncoder(rev::SparkAbsoluteEncoder::Type::kDutyCycle);
 
     // Create PID controllers

@@ -11,7 +11,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 // Create each swerve module
-SwerveModule::SwerveModule(const int driveID, const int steerID, const double originalAngle): 
+SwerveModule::SwerveModule(const int driveID, const int steerID):
     m_drive(driveID, rev::CANSparkMax::MotorType::kBrushless),
     m_steer(steerID, rev::CANSparkMax::MotorType::kBrushless) {
 
@@ -39,8 +39,7 @@ SwerveModule::SwerveModule(const int driveID, const int steerID, const double or
     m_drivePID.SetFF(0);
     m_drivePID.SetOutputRange(-1, 1);
 
-    m_steerEncoder.SetPositionConversionFactor(6.283185420251465);
-    m_steerEncoder.SetVelocityConversionFactor(0.10471975511965977);
+    m_steerEncoder.SetPositionConversionFactor(2 * M_PI);
     m_steerEncoder.SetInverted(true);
 
     m_steerPID.SetP(0.1);
@@ -48,13 +47,13 @@ SwerveModule::SwerveModule(const int driveID, const int steerID, const double or
     m_steerPID.SetD(1);
     m_steerPID.SetIZone(0);
     m_steerPID.SetFF(0);
-    m_steerPID.SetOutputRange(0, 6.283185420251465);
+    m_steerPID.SetOutputRange(-1, 1);
 
     // Make it so that PID understands limits and can work around them
     m_steerPID.SetPositionPIDWrappingEnabled(true);
     
     m_steerPID.SetPositionPIDWrappingMinInput(0);
-    m_steerPID.SetPositionPIDWrappingMaxInput(6.283185420251465);
+    m_steerPID.SetPositionPIDWrappingMaxInput(2 * M_PI);
 
     // Burn flash to save to memory
     m_drive.BurnFlash();
@@ -71,14 +70,14 @@ double SwerveModule::GetPosition() {
 void SwerveModule::SetState(double driveSpeed, double steerPosition) {
 
     // Initialize variables
-    double currentPosition, correctedPosition = RobotUtil.GetCorrectedAngle(steerPosition + originalAngle);
+    double currentPosition, correctedPosition = steerPosition;//RobotUtil.GetCorrectedAngle(steerPosition + originalAngle);
     frc::SmartDashboard::PutNumber("SWRV", correctedPosition);
 
     // Set steering position to the correct position using PID, steers with radians
     m_steerPID.SetReference(correctedPosition, rev::CANSparkMax::ControlType::kPosition);
 
     // Get current position
-    currentPosition = RobotUtil.GetCorrectedAngle(m_steerEncoder.GetPosition() + originalAngle);
+    currentPosition = RobotUtil.GetCorrectedAngle(m_steerEncoder.GetPosition());
 
     // Drive
     m_drive.Set(driveSpeed);

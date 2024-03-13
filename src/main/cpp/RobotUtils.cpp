@@ -40,3 +40,10 @@ double RobotUtils::GetCorrectedAngle(double angle) {
 
     return angle;
 }
+
+// Call this to get the yaw angle of the robot
+double RobotUtils::GetYawAngle(double aX, double aY, double aZ) {
+	double yawAngle = atan(aZ / sqrt((aX * aX) + aY * aY));
+
+	return yawAngle;
+}

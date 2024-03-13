@@ -18,8 +18,7 @@
 class SwerveModule {
 public:
 
-    SwerveModule(int driveID, int steerID,
-                    double originalAngle);
+    SwerveModule(int driveID, int steerID);
 
     double GetPosition();
 
@@ -27,8 +26,6 @@ public:
 
 
 private:
-    // Get offset
-    double originalAngle;
 
     RobotUtils RobotUtil;
 

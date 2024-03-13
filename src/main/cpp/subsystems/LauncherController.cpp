@@ -6,6 +6,7 @@
 
 #include "subsystems/LauncherController.h"
 #include <rev/CANSparkMax.h>
+#include "cmath"
 
 LauncherController::LauncherController(const int leftLCMID, const int rightLCMID):
     // Create motors
@@ -24,6 +25,13 @@ LauncherController::LauncherController(const int leftLCMID, const int rightLCMID
     leftLCM.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
     rightLCM.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
 
+    // Set conversion factor (2pi for absolute, .0725/2 for relative)
+    //leftLCME.SetPositionConversionFactor(2 * M_PI);
+    rightLCME.SetPositionConversionFactor(2 * M_PI);
+
+    leftLCM_PID.SetFeedbackDevice(rightLCME);
+    rightLCM_PID.SetFeedbackDevice(rightLCME);//(rightLCME);
+
     // Set PID coefficients
     leftLCM_PID.SetP(kP);
     leftLCM_PID.SetI(kI);
@@ -39,16 +47,20 @@ LauncherController::LauncherController(const int leftLCMID, const int rightLCMID
     rightLCM_PID.SetFF(kFF);
     rightLCM_PID.SetOutputRange(kMinOutput, kMaxOutput);
 
-    rightLCM.Follow(rightLCM);
-
     // Burn flash
     leftLCM.BurnFlash();
     rightLCM.BurnFlash();
 }
 
-void LauncherController::SetPosition(double requestedAngle){
+// Call this to get the position value of the launcher system
+double LauncherController::GetLauncherPosition() {
+    double position = rightLCME.GetPosition();
+    return position;
+}
+
+void LauncherController::SetLauncherPosition(double requestedAngle){
 
     // Set arm motors to desired position using SetReference
     leftLCM_PID.SetReference(requestedAngle, rev::CANSparkMax::ControlType::kPosition);
-    rightLCM_PID.SetReference(requestedAngle, rev::CANSparkMax::ControlType::kPosition);
+    rightLCM_PID.SetReference(-requestedAngle, rev::CANSparkMax::ControlType::kPosition);
 }

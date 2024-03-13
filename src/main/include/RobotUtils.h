@@ -17,5 +17,8 @@ public:
     // Call this to get an angle between 0 and 2pi
     double GetCorrectedAngle(double angle);
 
+    // Call this to get the robot's yaw angle
+    double GetYawAngle(double aX, double aY, double aZ);
+
 private:
 };
