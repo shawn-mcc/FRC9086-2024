@@ -113,17 +113,17 @@ void Robot::TeleopPeriodic() {
 	launcherAngle = fabs(y4Input) * M_PI; // use fabs() for absolute value
 
     // Engage all drive modules
-    swrv_frontLeft.SetState(speed - fabs(x2Input) + x2Input, steeringAngle + 1.57);
-    swrv_frontRight.SetState(-speed - fabs(x2Input) - x2Input, steeringAngle + 0);
-    swrv_backLeft.SetState(-speed - fabs(x2Input) - x2Input, steeringAngle + 3.14);
-    swrv_backRight.SetState(speed - fabs(x2Input) + x2Input, steeringAngle + 4.71);
+    swrv_frontLeft.SetState(speed + x2Input, steeringAngle + 1.57);
+    swrv_frontRight.SetState(-speed + x2Input, steeringAngle + 0);
+    swrv_backLeft.SetState(-speed - x2Input, steeringAngle + 3.14);
+    swrv_backRight.SetState(speed - x2Input, steeringAngle + 4.71);
 
 
     // Engage arm modules
-	arm.SetArmPosition(armAngle);
+	arm.SetArmPosition(M_PI / 4);
 
     // Engage launcher modules
-    launcher.SetLauncherPosition(launcherAngle);
+    //launcher.SetLauncherPosition(launcherAngle);
 
     // Engage fire control system modules
     if (fireTrigger > .1) {
@@ -137,18 +137,23 @@ void Robot::TeleopPeriodic() {
     }
 
     //Pressure stuff
-    /*m_ph.GetPressureSwitch();
-
-    bool A_Button = m_secondaryController.GetAButton();
-    bool B_Button = m_secondaryController.GetAButton();
+    bool A_Button = m_secondaryController.GetBButton();
     if (A_Button){
-        m_ph.EnableCompressorDigital();
-        frc::SmartDashboard::PutBoolean("Compressor", m_ph.GetPressureSwitch());
+        m_solenoid1A.Set(true);
+        m_solenoid1B.Set(false);
+        m_solenoid2A.Set(true);
+        m_solenoid2B.Set(false);
+        frc::SmartDashboard::PutBoolean("Solenoid1", m_solenoid1A.Get());
+        frc::SmartDashboard::PutBoolean("Solenoid2", m_solenoid2A.Get());
     }
     else{
-        m_ph.DisableCompressor();
-        frc::SmartDashboard::PutBoolean("Compressor", m_ph.GetPressureSwitch());
-    };*/
+        m_solenoid1A.Set(false);
+        m_solenoid1B.Set(true);
+        m_solenoid2A.Set(false);
+        m_solenoid2B.Set(true);
+        frc::SmartDashboard::PutBoolean("Solenoid1", m_solenoid1A.Get());
+        frc::SmartDashboard::PutBoolean("Solenoid2", m_solenoid2A.Get());
+    }
 
 	//frc::SmartDashboard::PutNumber("ARMLEFTPOSITION", leftACME.GetPosition());
 	//frc::SmartDashboard::PutNumber("ARMRIGHTPOSITION", rightACME.GetPosition());
