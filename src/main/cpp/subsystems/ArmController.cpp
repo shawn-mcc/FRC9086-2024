@@ -23,14 +23,17 @@ ArmController::ArmController(const int leftACMID, const int rightACMID):
 
     // Set modes to brake
     leftACM.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
-    rightACM.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+    rightACM.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+
+	// Set PID feedback
+    leftACM_PID.SetFeedbackDevice(leftACME);
+    //rightACM_PID.SetFeedbackDevice(rightACME);
 
     // Set conversion factor (2pi for absolute, .0725/2 for relative)
     leftACME.SetPositionConversionFactor(2 * M_PI);//(.0725 / 2);
     //rightACME.SetPositionConversionFactor(.0725 / 2);
 
-    leftACM_PID.SetFeedbackDevice(leftACME);
-    //rightACM_PID.SetFeedbackDevice(rightACME);
+    leftACME.SetInverted(true);
 
     // Set PID coefficients
     leftACM_PID.SetP(0.1);
@@ -48,8 +51,8 @@ ArmController::ArmController(const int leftACMID, const int rightACMID):
     rightACM_PID.SetFF(0);
     rightACM_PID.SetOutputRange(-1, 1);
 */
-    rightACM.Follow(leftACM);
-    rightACM.SetInverted(true);
+    //rightACM.Follow(leftACM);
+    //rightACM.SetInverted(true);
 
     leftACM_PID.SetPositionPIDWrappingEnabled(true);
     //rightACM_PID.SetPositionPIDWrappingEnabled(true);

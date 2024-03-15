@@ -110,7 +110,7 @@ void Robot::TeleopPeriodic() {
 	armAngle = fabs(y3Input) * M_PI; // use fabs() for absolute value
 
     // Launcher
-	launcherAngle = fabs(y4Input) * M_PI; // use fabs() for absolute value
+	launcherAngle = fabs(y4Input) * M_PI / 2; // use fabs() for absolute value
 
     // Engage all drive modules
     swrv_frontLeft.SetState(speed + x2Input, steeringAngle + 1.57);
@@ -120,16 +120,16 @@ void Robot::TeleopPeriodic() {
 
 
     // Engage arm modules
-	arm.SetArmPosition(M_PI / 4);
+	//arm.SetArmPosition(M_PI / 2);
 
     // Engage launcher modules
-    //launcher.SetLauncherPosition(launcherAngle);
+    launcher.SetLauncherPosition(0);
 
     // Engage fire control system modules
     if (fireTrigger > .1) {
         fireController.Fire(fireTrigger); // Actuvate all
     } else if (spoolTrigger > .1) {
-        fireController.Spool(fireTrigger); // Activate spool mode
+        fireController.Spool(spoolTrigger); // Activate spool mode
     } else if (intakeButton) {
         fireController.Intake(); // Activate intake mode
     } else {
@@ -174,7 +174,9 @@ void Robot::TeleopPeriodic() {
     frc::SmartDashboard::PutNumber("ARMRENC", arm.GetRArmPosition());
     frc::SmartDashboard::PutNumber("ARMLENC", arm.GetLArmPosition());
 
-    //frc::SmartDashboard::PutNumber("LAUNCHERPOSITION", launcher.GetLauncherPosition());
+	frc::SmartDashboard::PutNumber("Launcher Angle", launcherAngle);
+    frc::SmartDashboard::PutNumber("LAUNCHERENC", launcher.GetLauncherPosition());
+
 }
 
 /**

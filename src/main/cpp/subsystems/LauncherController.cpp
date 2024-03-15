@@ -22,16 +22,19 @@ LauncherController::LauncherController(const int leftLCMID, const int rightLCMID
     rightLCM.SetSmartCurrentLimit(40);
 
     // Set modes to brake
-    leftLCM.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+    leftLCM.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
     rightLCM.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
 
     // Set conversion factor (2pi for absolute, .0725/2 for relative)
     //leftLCME.SetPositionConversionFactor(2 * M_PI);
     rightLCME.SetPositionConversionFactor(2 * M_PI);
 
-    leftLCM_PID.SetFeedbackDevice(rightLCME);
+	//rightLCME.SetInverted(true);
+
+    //leftLCM_PID.SetFeedbackDevice(rightLCME);
     rightLCM_PID.SetFeedbackDevice(rightLCME);//(rightLCME);
 
+/*
     // Set PID coefficients
     leftLCM_PID.SetP(kP);
     leftLCM_PID.SetI(kI);
@@ -39,6 +42,7 @@ LauncherController::LauncherController(const int leftLCMID, const int rightLCMID
     leftLCM_PID.SetIZone(kIz);
     leftLCM_PID.SetFF(kFF);
     leftLCM_PID.SetOutputRange(kMinOutput, kMaxOutput);
+	*/
 
     rightLCM_PID.SetP(kP);
     rightLCM_PID.SetI(kI);
@@ -61,6 +65,6 @@ double LauncherController::GetLauncherPosition() {
 void LauncherController::SetLauncherPosition(double requestedAngle){
 
     // Set arm motors to desired position using SetReference
-    leftLCM_PID.SetReference(requestedAngle, rev::CANSparkMax::ControlType::kPosition);
-    rightLCM_PID.SetReference(-requestedAngle, rev::CANSparkMax::ControlType::kPosition);
+    //leftLCM_PID.SetReference(requestedAngle, rev::CANSparkMax::ControlType::kPosition);
+    rightLCM_PID.SetReference((2 * M_PI) - requestedAngle, rev::CANSparkMax::ControlType::kPosition);
 }
