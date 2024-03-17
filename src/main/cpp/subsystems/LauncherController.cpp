@@ -31,25 +31,33 @@ LauncherController::LauncherController(const int leftLCMID, const int rightLCMID
 
 	//rightLCME.SetInverted(true);
 
-    //leftLCM_PID.SetFeedbackDevice(rightLCME);
+    leftLCM_PID.SetFeedbackDevice(rightLCME);
     rightLCM_PID.SetFeedbackDevice(rightLCME);//(rightLCME);
 
-/*
-    // Set PID coefficients
-    leftLCM_PID.SetP(kP);
-    leftLCM_PID.SetI(kI);
-    leftLCM_PID.SetD(kD);
-    leftLCM_PID.SetIZone(kIz);
-    leftLCM_PID.SetFF(kFF);
-    leftLCM_PID.SetOutputRange(kMinOutput, kMaxOutput);
-	*/
 
-    rightLCM_PID.SetP(kP);
-    rightLCM_PID.SetI(kI);
-    rightLCM_PID.SetD(kD);
-    rightLCM_PID.SetIZone(kIz);
-    rightLCM_PID.SetFF(kFF);
-    rightLCM_PID.SetOutputRange(kMinOutput, kMaxOutput);
+    // Set PID coefficients
+    leftLCM_PID.SetP(0.1);
+    leftLCM_PID.SetI(1e-4);
+    leftLCM_PID.SetD(1);
+    leftLCM_PID.SetIZone(0);
+    leftLCM_PID.SetFF(0);
+    leftLCM_PID.SetOutputRange(1, -1);
+
+
+    rightLCM_PID.SetP(0.1);
+    rightLCM_PID.SetI(1e-4);
+    rightLCM_PID.SetD(1);
+    rightLCM_PID.SetIZone(0);
+    rightLCM_PID.SetFF(0);
+    rightLCM_PID.SetOutputRange(-1, 1);
+
+    leftLCM_PID.SetPositionPIDWrappingEnabled(true);
+    rightLCM_PID.SetPositionPIDWrappingEnabled(true);
+
+    leftLCM_PID.SetPositionPIDWrappingMinInput(0);
+    leftLCM_PID.SetPositionPIDWrappingMaxInput(2 * M_PI);
+    rightLCM_PID.SetPositionPIDWrappingMinInput(0);
+    rightLCM_PID.SetPositionPIDWrappingMaxInput(2 * M_PI);
 
     // Burn flash
     leftLCM.BurnFlash();
@@ -63,8 +71,71 @@ double LauncherController::GetLauncherPosition() {
 }
 
 void LauncherController::SetLauncherPosition(double requestedAngle){
+    /*double threePiTwo = (3 * M_PI) / 2.0;
+    double pi = M_PI;
+    double piTwo = M_PI / 2.0;
+    double twoPi = M_PI * 2.0;
+    double currentPosition = rightLCME.GetPosition();
+    double output = 6.27;
+
+    angle = twoPi - angle;
+
+    if (angle <= 0) { // Force it back to 0 position
+
+        output = 6.27;
+
+    } else if ((currentPosition > threePiTwo) && (currentPosition < twoPi)) { // Range 1 (3pi/2 - 2pi)
+
+        if ((angle > threePiTwo) && (angle < twoPi)) { // Check if angle is within range
+            output = angle;
+        } else if ((angle < threePiTwo) && (angle > 0)){
+            output = threePiTwo;
+        } else {
+            output = 6.27;
+        }
+
+    } else if ((currentPosition > pi) && (currentPosition < threePiTwo)) { // Range 1 (pi - 3pi/2)
+
+        if ((angle > pi) && (angle < threePiTwo)) { // Check if angle is within range
+            output = angle;
+        } else if (angle >= threePiTwo){
+            output = threePiTwo;
+        } else {
+            output = pi;
+        }
+
+    } else if ((currentPosition > piTwo) && (currentPosition < pi)) { // Range 1 (pi/2 - pi)
+
+        if ((angle > piTwo) && (angle < pi)) { // Check if angle is within range
+            output = angle;
+        } else if (angle >= pi){
+            output = pi;
+        } else {
+            output = piTwo;
+        }
+
+    } else if ((currentPosition > 0) && (currentPosition < piTwo)) { // Range 1 (0 - pi/2)
+
+        if (angle < piTwo) { // Check if angle is within range
+            output = angle;
+        } else {
+            output = piTwo;
+        }
+
+    } else {
+        // pid at 1:51am, please healp
+    }
+
+
+    // i hope this works
+    // i am at the brink of delerium
 
     // Set arm motors to desired position using SetReference
-    //leftLCM_PID.SetReference(requestedAngle, rev::CANSparkMax::ControlType::kPosition);
-    rightLCM_PID.SetReference((2 * M_PI) - requestedAngle, rev::CANSparkMax::ControlType::kPosition);
+    //output = twoPi - angle
+    //leftLCM_PID.SetReference(output, rev::CANSparkMax::ControlType::kPosition);
+    //rightLCM_PID.SetReference(output, rev::CANSparkMax::ControlType::kPosition);
+
+
+    //frc::SmartDashboard::PutNumber("LLAUNCHERPID", output);
+    //frc::SmartDashboard::PutNumber("RLAUNCHERPID", output); */
 }

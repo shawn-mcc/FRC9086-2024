@@ -83,11 +83,11 @@ void ArmController::SetArmPosition(double angle){
 	double piTwo = M_PI / 2.0;
 	double twoPi = M_PI * 2.0;
 	double currentPosition = leftACME.GetPosition();
-	double output = 6.27;
+	double output;
 
-	angle = twoPi - angle;
+	output = twoPi - angle;
 
-	if (angle <= 0) { // Force it back to 0 position
+	/*if (angle <= 0) { // Force it back to 0 position
 
 		output = 6.27;
 
@@ -131,16 +131,14 @@ void ArmController::SetArmPosition(double angle){
 
 	} else {
 		// pid at 1:51am, please healp
-	}
-
+	} */
 
 	// i hope this works
 	// i am at the brink of delerium
 
     // Set arm motors to desired position using SetReference
-	//output = twoPi - angle
-    //leftACM_PID.SetReference(output, rev::CANSparkMax::ControlType::kPosition);
-    //rightACM_PID.SetReference(output, rev::CANSparkMax::ControlType::kPosition);
+    leftACM_PID.SetReference(output, rev::CANSparkMax::ControlType::kPosition);
+    rightACM_PID.SetReference(output, rev::CANSparkMax::ControlType::kPosition);
 
 
     frc::SmartDashboard::PutNumber("LARMPID", output);

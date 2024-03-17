@@ -12,6 +12,7 @@
 #include "frc/BuiltInAccelerometer.h"
 #include <frc/PneumaticHub.h>
 #include <frc/Solenoid.h>
+#include "cameraserver/CameraServer.h"
 
 
 class Robot : public frc::TimedRobot {
@@ -28,7 +29,7 @@ class Robot : public frc::TimedRobot {
 
 	ArmController arm = ArmController(3, 17);
 
-    LauncherController launcher = LauncherController(4, 16);
+    //LauncherController launcher = LauncherController(4, 16);
 
     FireControl fireController = FireControl(14, 5, 15);
 
@@ -43,6 +44,8 @@ class Robot : public frc::TimedRobot {
     // Controls
     frc::XboxController m_primaryController{0};
     frc::XboxController m_secondaryController{1};
+
+	cs::UsbCamera camera1;
 
 public:
     void RobotInit() override;

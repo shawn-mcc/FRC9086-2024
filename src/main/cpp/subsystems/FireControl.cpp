@@ -34,14 +34,22 @@ FireControl::FireControl(const int topMotor, const int bottomMotor, const int pu
 }
 
 // Spool up the outer wheels
-void FireControl::Spool(double speed) {
-    topM.Set(speed);
-    bottomM.Set(speed);
+void FireControl::Spool(double speed, double trajectory) {
+    if (trajectory > 0) {
+        topM.Set(speed - trajectory);
+        bottomM.Set(speed);
+    } else if (trajectory < 0) {
+        topM.Set(speed);
+        bottomM.Set(speed - fabs(trajectory));
+    } else {
+        topM.Set(speed);
+        bottomM.Set(speed);
+    }
 }
 
 // Activate inner wheels (forces outer on)
-void FireControl::Fire(double speed) {
-    Spool(speed);
+void FireControl::Fire(double speed, double trajectory) {
+    Spool(speed, trajectory);
     pusherM.Set(speed);
 }
 

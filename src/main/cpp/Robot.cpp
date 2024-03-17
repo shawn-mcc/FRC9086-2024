@@ -12,8 +12,13 @@
 #include "RobotUtils.h"
 #include "frc/XboxController.h"
 #include "frc/BuiltInAccelerometer.h"
+#include "cameraserver/CameraServer.h"
 
 void Robot::RobotInit() {
+	camera1 = frc::CameraServer::StartAutomaticCapture();
+	camera1.SetResolution(320,240);
+	camera1.SetFPS(10);
+
 }
 
 /**
@@ -48,7 +53,23 @@ void Robot::AutonomousInit() {
   // }
 } //change
 
-void Robot::AutonomousPeriodic() {}
+void Robot::AutonomousPeriodic() {
+
+	swrv_frontLeft.SetState(1, 0 + 1.57);
+	swrv_frontRight.SetState(-1, 0 + 0);
+	swrv_backLeft.SetState(-1, 0 + 3.14);
+	swrv_backRight.SetState(1, 0 + 4.71);
+
+	sleep(.5);
+
+	swrv_frontLeft.SetState(0, 0 + 1.57);
+	swrv_frontRight.SetState(0, 0 + 0);
+	swrv_backLeft.SetState(0, 0 + 3.14);
+	swrv_backRight.SetState(0, 0 + 4.71);
+
+	sleep(14);
+
+}
 
 void Robot::TeleopInit() {
 
@@ -67,6 +88,7 @@ void Robot::TeleopPeriodic() {
     double y2Input = m_primaryController.GetRightY();
     double forwardThrottle = m_primaryController.GetRawAxis(3);
     double backwardThrottle = m_primaryController.GetRawAxis(2);
+    double rotate = m_primaryController.GetBButton();
 
     // Left stick -1 - 1 -> 0 - 2pi
     // Secondary controller
@@ -107,29 +129,40 @@ void Robot::TeleopPeriodic() {
     }
 
 	// Arm Control
-	armAngle = fabs(y3Input) * M_PI; // use fabs() for absolute value
+	armAngle = fabs(y3Input) * 2.4; // use fabs() for absolute value
 
     // Launcher
-	launcherAngle = fabs(y4Input) * 3; // use fabs() for absolute value
+    /*if (arm.GetLArmPosition() < (M_PI / 4) || arm.GetLArmPosition() > ((3 * M_PI) / 4)) { // Allow launcher to fully exten when out of deadzone
+		launcherAngle = fabs(y4Input) * 3; // use fabs() for absolute value
+	} else { // Force launcher to not extend when in dead zone
+		launcherAngle = (fabs(y4Input) * 1.5) + 3.14;
+	} */
 
     // Engage all drive modules
-    swrv_frontLeft.SetState(speed + x2Input, steeringAngle + 1.57);
-    swrv_frontRight.SetState(-speed + x2Input, steeringAngle + 0);
-    swrv_backLeft.SetState(-speed - x2Input, steeringAngle + 3.14);
-    swrv_backRight.SetState(speed - x2Input, steeringAngle + 4.71);
+    if (rotate) {
+    	swrv_frontLeft.SetState(speed, M_PI / 4);
+    	swrv_frontRight.SetState(speed, M_PI / 4);
+    	swrv_backLeft.SetState(speed, M_PI / 4);
+    	swrv_backRight.SetState(speed, M_PI / 4);
+    } else {
+	    swrv_frontLeft.SetState(speed + x2Input, steeringAngle + 1.57);
+	    swrv_frontRight.SetState(-speed + x2Input, steeringAngle + 0);
+	    swrv_backLeft.SetState(-speed - x2Input, steeringAngle + 3.14);
+	    swrv_backRight.SetState(speed - x2Input, steeringAngle + 4.71);
+    }
 
 
     // Engage arm modules
 	arm.SetArmPosition(armAngle);
 
     // Engage launcher modules
-    //launcher.SetLauncherPosition(0);
+    //launcher.SetLauncherPosition(launcherAngle);
 
     // Engage fire control system modules
     if (fireTrigger > .1) {
-        fireController.Fire(fireTrigger); // Actuvate all
+        fireController.Fire(fireTrigger, y4Input / 2.0); // Actuvate all
     } else if (spoolTrigger > .1) {
-        fireController.Spool(spoolTrigger); // Activate spool mode
+        fireController.Spool(spoolTrigger, y4Input / 2.0); // Activate spool mode
     } else if (intakeButton) {
         fireController.Intake(); // Activate intake mode
     } else {
@@ -174,8 +207,8 @@ void Robot::TeleopPeriodic() {
     frc::SmartDashboard::PutNumber("ARMRENC", arm.GetRArmPosition());
     frc::SmartDashboard::PutNumber("ARMLENC", arm.GetLArmPosition());
 
-	frc::SmartDashboard::PutNumber("Launcher Angle", launcherAngle);
-    frc::SmartDashboard::PutNumber("LAUNCHERENC", launcher.GetLauncherPosition());
+	//frc::SmartDashboard::PutNumber("Launcher Angle", launcherAngle);
+    //frc::SmartDashboard::PutNumber("LAUNCHERENC", launcher.GetLauncherPosition());
 
 }
 

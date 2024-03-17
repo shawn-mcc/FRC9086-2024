@@ -19,15 +19,6 @@ public:
     void SetLauncherPosition(double requestedAngle);
 
 private:
-    //PID coefficients
-    double kP = 0.1,
-           kI = 1e-4,
-           kD = 1,
-           kIz = 0,
-           kFF = 0,
-           kMaxOutput = 1,
-           kMinOutput = -1;
-
     // Get motor controllers
     rev::CANSparkMax leftLCM;
     rev::CANSparkMax rightLCM;
