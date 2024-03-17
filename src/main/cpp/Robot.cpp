@@ -9,6 +9,7 @@
 #include "subsystems/LauncherController.h"
 #include "subsystems/ArmController.h"
 #include "subsystems/FireControl.h"
+#include "subsystems/rat.cpp"
 #include "RobotUtils.h"
 #include "frc/XboxController.h"
 #include "frc/BuiltInAccelerometer.h"
@@ -18,7 +19,6 @@ void Robot::RobotInit() {
 	camera1 = frc::CameraServer::StartAutomaticCapture();
 	camera1.SetResolution(320,240);
 	camera1.SetFPS(10);
-
 }
 
 /**
@@ -30,6 +30,40 @@ void Robot::RobotInit() {
  * LiveWindow and SmartDashboard integrated updating.
  */
 void Robot::RobotPeriodic() {
+	//Moved this stuff here in hopes of fixxing lag. Don't think it will actually work, but RobotPeriodic
+	//is called before any specific modes.
+	// Primary controller
+	double x1Input = m_primaryController.GetLeftX();
+	double y1Input = m_primaryController.GetLeftY();
+	double x2Input = m_primaryController.GetRightX();
+	double y2Input = m_primaryController.GetRightY();
+	double forwardThrottle = m_primaryController.GetRawAxis(3);
+	double backwardThrottle = m_primaryController.GetRawAxis(2);
+	double rotate = m_primaryController.GetBButton();
+
+	// Left stick -1 - 1 -> 0 - 2pi
+	// Secondary controller
+	double x3Input = m_secondaryController.GetLeftX();
+	double y3Input = m_secondaryController.GetLeftY();
+	double x4Input = m_secondaryController.GetRightX();
+	double y4Input = m_secondaryController.GetRightY();
+	double fireTrigger = m_secondaryController.GetRawAxis(3);
+	double spoolTrigger = m_secondaryController.GetRawAxis(2);
+	bool intakeButton = m_secondaryController.GetAButton();
+
+	// Roborio positions
+	double xAccel = accelerometer.GetX();
+	double yAccel = accelerometer.GetY();
+	double zAccel = accelerometer.GetZ();
+
+	// Get the yaw angle of the Roborio
+	double yawAngle = RobotUtil.GetYawAngle(xAccel, yAccel, zAccel);
+
+	//
+	// |input| * pi
+
+	// Output variables
+	double steeringAngle, speed = 0, armAngle, launcherAngle;
 }
 
 /**
@@ -54,20 +88,23 @@ void Robot::AutonomousInit() {
 } //change
 
 void Robot::AutonomousPeriodic() {
-
+	//Shoot first? Pressed right up against Amp to start
+	arm.SetArmPosition(63.3); //This is based on Peterson Math
+	fireController.Fire(100/100, 0); //??? Not sure why speed / trajectory both needed? Also 100 might be too much
+	sleep(1) //Just to make sure we don't drive before note fully leaves
+	// Leave zone
 	swrv_frontLeft.SetState(1, 0 + 1.57);
 	swrv_frontRight.SetState(-1, 0 + 0);
 	swrv_backLeft.SetState(-1, 0 + 3.14);
 	swrv_backRight.SetState(1, 0 + 4.71);
-
-	sleep(.5);
-
+	//Stop leaving Zone
+	sleep(CalcMoveDuration(6.5)); //6.5ft is width of start zone to get those 2 points
 	swrv_frontLeft.SetState(0, 0 + 1.57);
 	swrv_frontRight.SetState(0, 0 + 0);
 	swrv_backLeft.SetState(0, 0 + 3.14);
 	swrv_backRight.SetState(0, 0 + 4.71);
-
-	sleep(14);
+	//No more auto
+	sleep(15 - CalcMoveDuration(6.5) - 1);
 
 }
 
@@ -80,39 +117,6 @@ void Robot::TeleopInit() {
  */
 void Robot::TeleopPeriodic() {
 	// 0 - 2pi
-
-    // Primary controller
-    double x1Input = m_primaryController.GetLeftX();
-    double y1Input = m_primaryController.GetLeftY();
-    double x2Input = m_primaryController.GetRightX();
-    double y2Input = m_primaryController.GetRightY();
-    double forwardThrottle = m_primaryController.GetRawAxis(3);
-    double backwardThrottle = m_primaryController.GetRawAxis(2);
-    double rotate = m_primaryController.GetBButton();
-
-    // Left stick -1 - 1 -> 0 - 2pi
-    // Secondary controller
-	double x3Input = m_secondaryController.GetLeftX();
-    double y3Input = m_secondaryController.GetLeftY();
-    double x4Input = m_secondaryController.GetRightX();
-    double y4Input = m_secondaryController.GetRightY();
-    double fireTrigger = m_secondaryController.GetRawAxis(3);
-    double spoolTrigger = m_secondaryController.GetRawAxis(2);
-    bool intakeButton = m_secondaryController.GetAButton();
-
-    // Roborio positions
-    double xAccel = accelerometer.GetX();
-    double yAccel = accelerometer.GetY();
-    double zAccel = accelerometer.GetZ();
-
-    // Get the yaw angle of the Roborio
-    double yawAngle = RobotUtil.GetYawAngle(xAccel, yAccel, zAccel);
-
-	//
-	// |input| * pi
-
-    // Output variables
-	double steeringAngle, speed = 0, armAngle, launcherAngle;
 
     // Get the triggers to make throttles
     speed = forwardThrottle - backwardThrottle;
