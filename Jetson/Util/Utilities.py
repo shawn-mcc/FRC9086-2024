@@ -40,8 +40,8 @@ class Camera:
             #Allow use of pose estimation
             self.poseEstimation = True
 
-            #Define tag size
-            self.tagSize = 6
+            #Define tag size in meters
+            self.tagSize = 0.1651
 
             #Initilize detector
             self.detector = Detector(families="tag36h11",

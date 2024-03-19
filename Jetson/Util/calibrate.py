@@ -1,6 +1,7 @@
 import cv2
 import os
 import threading
+import numpy as np
 from os import walk
 from pygrabber.dshow_graph import FilterGraph
 
@@ -27,7 +28,7 @@ class CameraSetup:
             print("Starting image taker...")
             CameraSetup.imageTaker(device, f"Camera Calibratinator: {folderName}", f"{folderName}")
         #Check to see if there are actually images in the folder
-        if len(imageNames) < 25:
+        if len(imageNames) < 20:
             print(f"No images or not enough images found under: Camera Calibration Images/{folderName}")
             print("Starting image taker...")
             CameraSetup.imageTaker(device, f"Camera Calibratinator: {folderName}", f"{folderName}")
@@ -75,10 +76,9 @@ class CameraSetup:
         p2 = distCoeffs[0][3]
         k3 = distCoeffs[0][4]
 
-        #Destroy windows and write data to .CUM file
+        #Print results
         cv2.destroyWindow("Calibration")
-        CalibrationUnitMarkup.writeToFile(f"Camera Calibration Data/{folderName}.cum", fx, fy, cx, cy, distCoeffs[0])
-        print(f"Calibration data has been written to a Calibration Unit Markup file @ Camera Calibration Data/{folderName}.cum")
+        print(f"Fx:{fx}\nFy:{fy}\nCx:{cx}\nCy:{cy}, distCoeffs:{distCoeffs[0]}")
 
 
     @staticmethod
@@ -96,7 +96,7 @@ class CameraSetup:
             while not threadOFF:
                 ret, frame = capture.read()
                 cv2.imshow(windowName, frame)
-                cv2.waitKey(delay=1)
+                cv2.waitKey(1)
 
         thread = threading.Thread(target=showView)
         thread.start()
@@ -112,7 +112,7 @@ class CameraSetup:
             picturePath = os.getcwd() + f"\\Camera Calibration Images\\{folderName}\\{pictureCount}.png"
             cv2.imwrite(picturePath, frame)
             print(f"Picture Taken: {pictureCount} ({picturePath})")
-            if pictureCount == 50:
+            if pictureCount == 20:
                 break
             else:
                 pictureCount += 1
