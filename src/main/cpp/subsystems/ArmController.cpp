@@ -140,7 +140,6 @@ void ArmController::SetArmPosition(double angle){
     leftACM_PID.SetReference(output, rev::CANSparkMax::ControlType::kPosition);
     rightACM_PID.SetReference(output, rev::CANSparkMax::ControlType::kPosition);
 
-
     frc::SmartDashboard::PutNumber("LARMPID", output);
     frc::SmartDashboard::PutNumber("RARMPID", output);
 }

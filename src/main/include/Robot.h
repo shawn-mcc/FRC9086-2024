@@ -33,6 +33,7 @@ class Robot : public frc::TimedRobot {
 
     FireControl fireController = FireControl(14, 5, 15);
 
+
     frc::PneumaticHub m_PH{9};
 
     frc::Solenoid m_solenoid1A = m_PH.MakeSolenoid(8);

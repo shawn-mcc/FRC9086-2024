@@ -22,6 +22,10 @@ public:
 
     double GetPosition();
 
+    double GetDistance();
+
+    bool SetDistanceState(double distance, double steerPosition);
+
     void SetState(double driveSpeed, double steerPosition);
 
 
@@ -40,4 +44,5 @@ private:
     // Create encoder
     rev::SparkAbsoluteEncoder m_steerEncoder = m_steer.GetAbsoluteEncoder(rev::SparkAbsoluteEncoder::Type::kDutyCycle);
 
+    rev::SparkRelativeEncoder m_driveEncoder = m_drive.GetEncoder();
 };

@@ -47,3 +47,8 @@ double RobotUtils::GetYawAngle(double aX, double aY, double aZ) {
 
 	return yawAngle;
 }
+
+int RobotUtils::CalcMoveDuration (int distance){
+    int FPS = 15; //Update this variable with feet per second movement from robot after testing tomorrow
+    return distance / FPS;
+}

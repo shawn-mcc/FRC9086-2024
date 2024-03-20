@@ -20,5 +20,8 @@ public:
     // Call this to get the robot's yaw angle
     double GetYawAngle(double aX, double aY, double aZ);
 
+    // Get time required for movement
+    int CalcMoveDuration (int distance);
+
 private:
 };

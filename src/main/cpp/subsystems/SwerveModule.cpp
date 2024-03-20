@@ -30,6 +30,8 @@ SwerveModule::SwerveModule(const int driveID, const int steerID):
     // Set encoder
     m_steerPID.SetFeedbackDevice(m_steerEncoder);
 
+    m_driveEncoder.SetPositionConversionFactor((1 / 4.71) * 0.239395);
+
     // Establish PID controls to keep the motors in proper positions
     // These can be changed if the need arises
     m_drivePID.SetP(0.1);
@@ -64,6 +66,23 @@ SwerveModule::SwerveModule(const int driveID, const int steerID):
 double SwerveModule::GetPosition() {
     double position = m_steerEncoder.GetPosition();
     return position;
+}
+
+double SwerveModule::GetDistance() {
+    double position = m_driveEncoder.GetPosition();
+    return position;
+}
+
+bool SwerveModule::SetDistanceState(double distance, double steerPosition) {
+	m_driveEncoder.SetPositionConversionFactor((((1 / 4.71) * 0.239395) / 2.5) / distance);
+
+    if (m_driveEncoder.GetPosition() <= 1) {
+	    SetState(1, steerPosition);
+    } else {
+	    SetState(0, steerPosition);
+	}
+
+    return (m_driveEncoder.GetPosition() >= 1);
 }
 
 // Call this to set module to a position (in radians) and drive (in percentage 0-1)

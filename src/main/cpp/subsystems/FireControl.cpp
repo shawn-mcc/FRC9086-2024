@@ -45,11 +45,21 @@ void FireControl::Spool(double speed, double trajectory) {
         topM.Set(speed);
         bottomM.Set(speed);
     }
+    pusherM.Set(-speed);
 }
 
 // Activate inner wheels (forces outer on)
 void FireControl::Fire(double speed, double trajectory) {
-    Spool(speed, trajectory);
+    if (trajectory > 0) {
+        topM.Set(speed - trajectory);
+        bottomM.Set(speed);
+    } else if (trajectory < 0) {
+        topM.Set(speed);
+        bottomM.Set(speed - fabs(trajectory));
+    } else {
+        topM.Set(speed);
+        bottomM.Set(speed);
+    }
     pusherM.Set(speed);
 }
 
