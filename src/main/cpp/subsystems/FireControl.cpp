@@ -45,7 +45,7 @@ void FireControl::Spool(double speed, double trajectory) {
         topM.Set(speed);
         bottomM.Set(speed);
     }
-    pusherM.Set(-speed);
+    pusherM.Set(-speed / 2);
 }
 
 // Activate inner wheels (forces outer on)
@@ -65,9 +65,9 @@ void FireControl::Fire(double speed, double trajectory) {
 
 // All wheels moving reverse
 void FireControl::Intake() {
-    topM.Set(-1);
-    bottomM.Set(-1);
-    pusherM.Set(-1);
+    topM.Set(-0.5);
+    bottomM.Set(-0.5);
+    pusherM.Set(-.5);
 }
 
 // Stop all wheels

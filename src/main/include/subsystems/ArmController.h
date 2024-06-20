@@ -15,9 +15,10 @@ public:
     double GetRArmPosition();
     double GetLArmPosition();
 
-    void SetArmPosition(double angle);
+    bool SetArmPosition(double angle);
 
 private:
+	int autonState;
 
     // Get motor controllers
     rev::CANSparkMax leftACM;
@@ -27,7 +28,7 @@ private:
     //rev::SparkRelativeEncoder leftACME = leftACM.GetEncoder();
     //rev::SparkRelativeEncoder rightACME = rightACM.GetEncoder();
     rev::SparkAbsoluteEncoder leftACME = leftACM.GetAbsoluteEncoder(rev::SparkAbsoluteEncoder::Type::kDutyCycle);
-    //rev::SparkAbsoluteEncoder rightACME = rightACM.GetAbsoluteEncoder(rev::SparkAbsoluteEncoder::Type::kDutyCycle);
+    rev::SparkAbsoluteEncoder rightACME = rightACM.GetAbsoluteEncoder(rev::SparkAbsoluteEncoder::Type::kDutyCycle);
 
     // Create PID controllers
     rev::SparkPIDController leftACM_PID = leftACM.GetPIDController();

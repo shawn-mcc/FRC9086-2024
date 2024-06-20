@@ -27,20 +27,20 @@ class Robot : public frc::TimedRobot {
     SwerveModule swrv_backLeft = SwerveModule(8, 7);
     SwerveModule swrv_backRight = SwerveModule(10, 11);
 
-	ArmController arm = ArmController(3, 17);
+	ArmController arm = ArmController(3, 13);
 
     //LauncherController launcher = LauncherController(4, 16);
 
     FireControl fireController = FireControl(14, 5, 15);
 
 
-    frc::PneumaticHub m_PH{9};
+    /*frc::PneumaticHub m_PH{9};
 
     frc::Solenoid m_solenoid1A = m_PH.MakeSolenoid(8);
     frc::Solenoid m_solenoid1B = m_PH.MakeSolenoid(9);
 
     frc::Solenoid m_solenoid2A = m_PH.MakeSolenoid(14);
-    frc::Solenoid m_solenoid2B = m_PH.MakeSolenoid(15);
+    frc::Solenoid m_solenoid2B = m_PH.MakeSolenoid(15);*/
 
     // Controls
     frc::XboxController m_primaryController{0};

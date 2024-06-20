@@ -50,6 +50,7 @@ void Robot::DisabledPeriodic() {}
  * RobotContainer} class.
  */
 void Robot::AutonomousInit() {
+    frc::SmartDashboard::PutNumber("AutonState", 11);
   //m_autonomousCommand = m_container.GetAutonomousCommand();
 
   // if (m_autonomousCommand) {
@@ -80,10 +81,83 @@ void Robot::AutonomousPeriodic() {
 	sleep(13.5);
 	*/
 
-	swrv_frontLeft.SetDistanceState(0, 0 + 1.57);
-	swrv_frontRight.SetDistanceState(0, 0 + 0);
-	swrv_backLeft.SetDistanceState(0, 0 + 3.14);
-	swrv_backRight.SetDistanceState(0, 0 + 4.71);
+	int autonState = frc::SmartDashboard::GetNumber("AutonState", 11);
+
+	switch (autonState) {
+	case 11:
+		if (arm.SetArmPosition(2.4)) {
+			frc::SmartDashboard::PutNumber("AutonState", autonState - 1);
+		} else {
+			arm.SetArmPosition(2.4);
+			//fireController.Spool(.5,0);
+			fireController.StopAll();
+			sleep(.5);
+		}
+		break;
+	case 10:
+	case 9:
+	case 8:
+	case 7:
+		arm.SetArmPosition(2.35);
+		fireController.Spool(1, 0);
+		sleep(1);
+		frc::SmartDashboard::PutNumber("AutonState", autonState - 1);
+		break;
+	case 6:
+	case 5:
+	case 4:
+	case 3:
+		arm.SetArmPosition(2.35);
+		sleep(1);
+		fireController.Fire(1, .1);
+		frc::SmartDashboard::PutNumber("AutonState", autonState - 1);
+		break;
+	case 2:
+		arm.SetArmPosition(0);
+		fireController.StopAll();
+		sleep(1);
+		frc::SmartDashboard::PutNumber("AutonState", 1);
+
+		swrv_frontLeft.SetState(0, 3.14 + 1.57);
+		swrv_frontRight.SetState(0, 3.14 + 0);
+		swrv_backLeft.SetState(0, 3.14 + 3.14);
+		swrv_backRight.SetState(0, 3.14 + 4.71);
+
+		break;
+	case 1:
+		/*
+		if ((swrv_frontLeft.GetDistance(1) > 1) ||
+		(swrv_frontRight.GetDistance(1) > 1) ||
+		(swrv_backLeft.GetDistance(1) > 1) ||
+		(swrv_backRight.GetDistance(1) > 1)) {
+			frc::SmartDashboard::PutNumber("AutonState", 0);
+
+		} else {
+			swrv_frontLeft.SetState(1, 3.14 + 1.57);
+			swrv_frontRight.SetState(-1, 3.14 + 0);
+			swrv_backLeft.SetState(-1, 3.14 + 3.14);
+			swrv_backRight.SetState(1, 3.14 + 4.71);
+
+			}*/
+		swrv_frontLeft.SetState(-.5, 3.14 + 1.57);
+		swrv_frontRight.SetState(.5, 3.14 + 0);
+		swrv_backLeft.SetState(.5, 3.14 + 3.14);
+		swrv_backRight.SetState(-.5, 3.14 + 4.71);
+		sleep(1);
+		frc::SmartDashboard::PutNumber("AutonState", 0);
+		break;
+	default:
+
+		swrv_frontLeft.SetState(0, 3.14 + 1.57);
+		swrv_frontRight.SetState(0, 3.14 + 0);
+		swrv_backLeft.SetState(0, 3.14 + 3.14);
+		swrv_backRight.SetState(0, 3.14 + 4.71);
+
+		break;
+
+	}
+
+
 }
 
 void Robot::TeleopInit() {
@@ -193,9 +267,9 @@ void Robot::TeleopPeriodic() {
     }
 
 	if (armUpButton) {
-		arm.SetArmPosition(2.38);
+		arm.SetArmPosition(2.3);
 	} else if (intakeButton){
-		arm.SetArmPosition(0.15);
+		arm.SetArmPosition(0.1);
 	} else {
 		arm.SetArmPosition(armAngle);
 	}
@@ -235,10 +309,10 @@ void Robot::TeleopPeriodic() {
     frc::SmartDashboard::PutNumber("SWRVRLENC", swrv_backLeft.GetPosition());
     frc::SmartDashboard::PutNumber("SWRVRRENC", swrv_backRight.GetPosition());
 
-	frc::SmartDashboard::PutNumber("SWRVFRROT", swrv_frontRight.GetDistance());
-	frc::SmartDashboard::PutNumber("SWRVFLROT", swrv_frontLeft.GetDistance());
-	frc::SmartDashboard::PutNumber("SWRVBRROT", swrv_backRight.GetDistance());
-	frc::SmartDashboard::PutNumber("SWRVBLROT", swrv_backLeft.GetDistance());
+	frc::SmartDashboard::PutNumber("SWRVFRROT", swrv_frontRight.GetDistance(1));
+	frc::SmartDashboard::PutNumber("SWRVFLROT", swrv_frontLeft.GetDistance(1));
+	frc::SmartDashboard::PutNumber("SWRVBRROT", swrv_backRight.GetDistance(1));
+	frc::SmartDashboard::PutNumber("SWRVBLROT", swrv_backLeft.GetDistance(1));
 
 	frc::SmartDashboard::PutNumber("Arm Angle", armAngle);
     frc::SmartDashboard::PutNumber("ARMRENC", arm.GetRArmPosition());
@@ -252,6 +326,7 @@ void Robot::TeleopPeriodic() {
  * This function is called periodically during test mode.
  */
 void Robot::TestPeriodic() {
+	arm.SetArmPosition(0);
 /* Jetson is broken, can use when we have fixed one
 	auto inst = nt::NetworkTableInstance::GetDefault();
 	auto smartDashboard = inst.GetTable("SmartDashboard");

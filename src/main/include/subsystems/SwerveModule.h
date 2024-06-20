@@ -22,7 +22,7 @@ public:
 
     double GetPosition();
 
-    double GetDistance();
+    double GetDistance(double distance);
 
     bool SetDistanceState(double distance, double steerPosition);
 

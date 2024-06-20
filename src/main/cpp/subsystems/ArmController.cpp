@@ -32,25 +32,26 @@ ArmController::ArmController(const int leftACMID, const int rightACMID):
 
     // Set conversion factor (2pi for absolute, .0725/2 for relative)
     leftACME.SetPositionConversionFactor(2 * M_PI);//(.0725 / 2);
-    //rightACME.SetPositionConversionFactor(.0725 / 2);
+    //rightACME.SetPositionConversionFactor(2 * M_PI);
 
-    //leftACME.SetInverted(true);
+    //rightACME.SetInverted(true);
+	//leftACME.SetInverted(true);
 
     // Set PID coefficients
-    leftACM_PID.SetP(0.1);
+    leftACM_PID.SetP(0.6);
     leftACM_PID.SetI(1e-4);
-    leftACM_PID.SetD(1);
+    leftACM_PID.SetD(0);
     leftACM_PID.SetIZone(0);
     leftACM_PID.SetFF(0);
-    leftACM_PID.SetOutputRange(-1, 1);
+    leftACM_PID.SetOutputRange(-.3, .3);
 
 
-    rightACM_PID.SetP(0.1);
+    rightACM_PID.SetP(0.6);
     rightACM_PID.SetI(1e-4);
-    rightACM_PID.SetD(1);
+    rightACM_PID.SetD(0);
     rightACM_PID.SetIZone(0);
     rightACM_PID.SetFF(0);
-    rightACM_PID.SetOutputRange(1, -1);
+    rightACM_PID.SetOutputRange(.3, -.3);
 
     //rightACM.SetInverted(true);
 
@@ -77,7 +78,7 @@ double ArmController::GetLArmPosition() {
     return position;
 }
 
-void ArmController::SetArmPosition(double angle){
+bool ArmController::SetArmPosition(double angle){
 	double threePiTwo = (3 * M_PI) / 2.0;
 	double pi = M_PI;
 	double piTwo = M_PI / 2.0;
@@ -142,4 +143,6 @@ void ArmController::SetArmPosition(double angle){
 
     frc::SmartDashboard::PutNumber("LARMPID", output);
     frc::SmartDashboard::PutNumber("RARMPID", output);
+
+	return ((leftACME.GetPosition() >= (output - .25)) && (leftACME.GetPosition() <= (output + .25)));
 }

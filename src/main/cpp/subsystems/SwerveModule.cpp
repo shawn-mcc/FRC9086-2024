@@ -44,7 +44,7 @@ SwerveModule::SwerveModule(const int driveID, const int steerID):
     m_steerEncoder.SetPositionConversionFactor(2 * M_PI);
     m_steerEncoder.SetInverted(true);
 
-    m_steerPID.SetP(0.1);
+    m_steerPID.SetP(0.4);
     m_steerPID.SetI(1e-4);
     m_steerPID.SetD(1);
     m_steerPID.SetIZone(0);
@@ -68,13 +68,16 @@ double SwerveModule::GetPosition() {
     return position;
 }
 
-double SwerveModule::GetDistance() {
+double SwerveModule::GetDistance(double distance) {
+	m_driveEncoder.SetPositionConversionFactor((((1 / 4.71) * 0.239395) / 2.5) / (distance * 2));
     double position = m_driveEncoder.GetPosition();
     return position;
 }
 
 bool SwerveModule::SetDistanceState(double distance, double steerPosition) {
-	m_driveEncoder.SetPositionConversionFactor((((1 / 4.71) * 0.239395) / 2.5) / distance);
+	m_driveEncoder.SetPositionConversionFactor((((1 / 4.71) * 0.239395) / 2.5) / (distance * 2));
+
+	frc::SmartDashboard::PutNumber("autonenc", m_driveEncoder.GetPosition());
 
     if (m_driveEncoder.GetPosition() <= 1) {
 	    SetState(1, steerPosition);
@@ -98,6 +101,5 @@ void SwerveModule::SetState(double driveSpeed, double steerPosition) {
     // Get current position
     currentPosition = RobotUtil.GetCorrectedAngle(m_steerEncoder.GetPosition());
 
-    // Drive
-    m_drive.Set(driveSpeed);
+    // Drive    m_drive.Set(driveSpeed);
 }
